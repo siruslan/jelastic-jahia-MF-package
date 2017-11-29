@@ -8,7 +8,7 @@
     "short": "Jahia - Digital Experience Manager",
     "text": "Digital Experience Manager gives you an agile customizable platform that manages your entire digital ecosystem to innovate and deliver great customer experiences, foster internal collaboration and support dynamic business needs for sustainable growth."
   },
-  "baseUrl": "https://github.com/Jahia/jelastic-jahia-package/tree/master",
+  "baseUrl": "https://github.com/Jahia/jelastic-jahia-MF-package/tree/master",
   "globals": {
     "db_user": "jahia-db-${fn.random}",
     "db_pass": "${fn.password(20)}",
