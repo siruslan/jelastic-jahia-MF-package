@@ -1,0 +1,50 @@
+DX Installation (Cluster) - Jelastic
+
+Prerequisite to everything: Oracle JDK 8 pre-installed on every Jahia DX Server.
+
+Procedure “Master DX installation”
+ - Download mysql-connector-java-5.1.42.jar (https://dev.mysql.com/downloads/file/?id=472651)
+ - Download DigitalExperienceManager-EnterpriseDistribution-7.2.1.1-r56757.4188.jar (https://www.jahia.com/downloads/jahia/digitalexperiencemanager7.2.1/DigitalExperienceManager-EnterpriseDistribution-7.2.1.1-r56757.4188.jar)
+ - Download dx_7211_processing.xml
+ - Update dx_7211_processing.xml to make it fit the server
+	- Replace installpath with the installation directory
+	- Adapt dbSettings.connection.url.mysql (jdbc:mysql://<DBHostName>/<DBName>?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false)
+	- Replace dbSettings.connection.username with the DB username
+	- Replace dbSettings.connection.password with the DB password
+	- Replace externalizedConfigTargetPath with the installpath value with /digital-factory-config at the end
+	- Replace data.dir with the installpath value with /digital-factory-data at the end
+	- If known at this time, replace cluster.node.ipAddress with the local IP address of the server. Otherwise, leave value as it is.
+	- If known at this time, replace cluster.node.serverId with the local IP address of the server. Otherwise, leave value as it is.
+ - Execute java -jar DigitalExperienceManager-EnterpriseDistribution-7.2.1.1-r56757.4188.jar dx_7211_processing.xml (the path to dx_7211_processing.xml can be an absolute path) 
+ - Start the server using the start.sh script at the root folder of DX’s install path
+ - After a few minutes, the port 8080 should display a login form, root/root are the default credentials (made configurable in dx_7211_processing.xml)
+
+
+Procedure “Browsing DX installation” (can be repeated an unlimited number of times for a multi-node architecture)
+ - Download mysql-connector-java-5.1.42.jar (https://dev.mysql.com/downloads/file/?id=472651)
+ - Download DigitalExperienceManager-EnterpriseDistribution-7.2.1.1-r56757.4188.jar (https://www.jahia.com/downloads/jahia/digitalexperiencemanager7.2.1/DigitalExperienceManager-EnterpriseDistribution-7.2.1.1-r56757.4188.jar)
+ - Download dx_7211_browsing.xml
+	- Replace installpath with the installation directory
+	- Adapt dbSettings.connection.url.mysql (jdbc:mysql://<DBHostName>/<DBName>?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false)
+	- Replace dbSettings.connection.username with the DB username
+	- Replace dbSettings.connection.password with the DB password
+	- Replace externalizedConfigTargetPath with the installpath value with /digital-factory-config at the end
+	- Replace data.dir with the installpath value with /digital-factory-data at the end
+	- If known at this time, replace cluster.node.ipAddress with the local IP address of the server. Otherwise, leave value as it is.
+	- If known at this time, replace cluster.node.serverId with the local IP address of the server. Otherwise, leave value as it is.
+ - Execute java -jar DigitalExperienceManager-EnterpriseDistribution-7.2.1.1-r56757.4188.jar dx_7211_browsing.xml (the path to dx_7211_processing.xml can be an absolute path) 
+ - Start the server using the start.sh script at the root folder of DX’s install path
+ - After a few minutes, the port 8080 should display a login form, root/root are the default credentials (made configurable in dx_7211_browsing.xml)
+
+
+Procedure “Backup DX Instance” (order of operations is important)
+	- Make an HTTP request to http://<serverHostName>:8080/modules/tools/maintenance.jsp?maintenance=true (you might get an error 401 or 403, we’ll ignore this for now)
+	- Backup the whole DX installation path
+	- Backup the whole database with a none blocking way. Jahia DX won’t write anything on the DB since we have activated maintenance mode, no data corruption can happen
+	- Make an HTTP request to http://<serverHostName>:8080/modules/tools/maintenance.jsp?maintenance=false (you might get an error 401 or 403, we’ll ignore this for now)
+
+Procedure “Restore DX Instance” (order of operations is important)
+	- Restore the database and the file system at the same location it was previously installed
+		- If this is not possible, a few configuration files will need to be impacted. Please let us know if this information needs to be communicated now
+	- Edit the file <installPath>/digital-factory-config/jahia/jahia.node.properties and set a random value to cluster.node.serverId (could be a timestamp or a random String of 6-32 alphanumeric characters)
+	- If restoring a server to another environment (like cloning the production to restore it to pre-production), adapt the <installPath>/tomcat/webapps/ROOT/META-INF/context.xml file to provide the new datasource (same connection string that was provided during installation) 

@@ -1,0 +1,19 @@
+Installation procedure inside existing tomcat
+
+
+1. Create DB
+2. Create a master tomcat instance
+3. Upload jahia installer & config file & mysql driver there
+4. fill config file with proper access params to db node
+5. launch installer
+6. export <installPath>/digital-factory-data folder via NFS
+7. create tomcat for the first browsing instance
+8. mount <installPath>/digital-factory-data folder from the master node
+9. fill config file with proper access params to db node
+10. launch the installer of the first browsing node
+10. repead the same procedure for 2nd and following browsing nodes
+
+
+Scaling out (horizontal scaling)
+1. Edit the file <installPath>/digital-factory-config/jahia/jahia.node.properties and set a random value to cluster.node.serverId (could be a timestamp or a random String of 6-32 alphanumeric characters)
+ 

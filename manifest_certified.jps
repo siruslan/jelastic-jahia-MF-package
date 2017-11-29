@@ -1,0 +1,127 @@
+{
+    "jpsType": "install",
+    "jpsVersion": "0.99",
+    "name": "Jahia - Digital Experience Manager",
+    "logo": "https://goo.gl/Lnkgme",
+    "id": "jahia-dem",
+    "description": {
+        "short": "Jahia - Digital Experience Manager",
+        "text": "Digital Experience Manager gives you an agile customizable platform that manages your entire digital ecosystem to innovate and deliver great customer experiences, foster internal collaboration and support dynamic business needs for sustainable growth."
+    },
+    "baseUrl": "https://git.jelastic.com/rs/jahia/raw/master",
+    "globals": {
+        "db_user": "jahia-db-${fn.random}",
+        "db_pass": "${fn.password(20)}",
+        "mngr_user": "manager",
+        "mngr_pass": "${fn.password(20)}",
+        "su_pass": "${fn.password(20)}"
+    },
+    "ssl": true,
+    "nodes": [{
+        "nodeType": "nginx",
+        "displayName": "Balancer",
+        "count": 1,
+        "cloudlets": 16,
+        "nodeGroup": "bl"
+    }, {
+        "nodeType": "tomcat",
+        "tag": "8.5.23-openjdk-1.8.0_144",
+        "displayName": "Browser",
+        "count": 2,
+        "cloudlets": 32,
+        "nodeGroup": "cp",
+        "volumes": [
+            "/data"
+        ],
+        "volumeMounts": {
+            "/data": {
+                "readOnly": false,
+                "sourcePath": "/data",
+                "sourceNodeGroup": "mstr"
+            }
+        },
+        "startService": false
+    }, {
+        "nodeType": "tomcat",
+        "tag": "8.5.23-openjdk-1.8.0_144",
+        "count": 1,
+        "cloudlets": 32,
+        "nodeGroup": "mstr",
+        "links": "sqldb:mysqldb",
+        "volumes": [
+            "/data"
+        ],
+        "startService": false
+    }, {
+        "nodeType": "mysql",
+        "tag": "5.7.19",
+        "displayName": "DB Cluster",
+        "count": 1,
+        "cloudlets": 32,
+        "nodeGroup": "sqldb"
+    }],
+    "onInstall": [
+        "setupDB",
+        "setupProcessing",
+        "setupBrowsing"
+    ],
+    "onBeforeServiceScaleOut[cp]": {
+        "forEach(event.response.nodes)": {
+            "updateServerId": {
+                "nodeId": "${@i.id}"
+            }
+        }
+    },
+    "actions": {
+        "setupDB": {
+            "cmd[sqldb]": [
+                "wget -O setupUser.sh https://raw.githubusercontent.com/jelastic-jps/mysql-cluster/master/scripts/setupUser.sh",
+                "bash setupUser.sh ${globals.db_user} ${globals.db_pass}",
+                "mysql -u${globals.db_user} -p${globals.db_pass} -e \"CREATE DATABASE IF NOT EXISTS jahia CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\""
+            ],
+            "user": "root"
+        },
+        "setupProcessing": [{
+            "cmd[mstr]": [
+                "wget -O /data/install.sh ${baseUrl}/common/install.sh",
+                "bash /data/install.sh init ${baseUrl} ${globals.db_user} ${globals.db_pass} ${globals.mngr_user} ${globals.mngr_pass} ${globals.su_pass}",
+                "bash /data/install.sh setupProcessing",
+                "bash /data/install.sh reindexrm true"
+            ]
+        }, {
+            "api": "env.control.ExecDockerRunCmd",
+            "nodeId": "${nodes.mstr.first.id}"
+        }, {
+            "sleep": 60000
+        }, {
+            "cmd[mstr]": [
+                "bash /data/install.sh reindex false"
+            ]
+        }],
+        "setupBrowsing": [{
+            "cmd[cp]": [
+                "bash /data/install.sh setupBrowsing",
+                "bash /data/install.sh reindex false"
+            ]
+        }, {
+            "forEach(nodes.cp)": [{
+                "updateServerId": {
+                    "nodeId": "${@i.id}"
+                }
+            }, {
+                "api": "env.control.ExecDockerRunCmd",
+                "nodeId": "${@i.id}"
+            }]
+        }],
+        "updateServerId": {
+            "cmd[${this.nodeId}]": [
+                "prop=/opt/tomcat/conf/digital-factory-config/jahia/jahia.node.properties",
+                "sed -i 's/dx-.*/dx-node${this.nodeId}/' $prop"
+             ]
+        }
+    },
+    "success": {
+        "text": "/success.md",
+        "email": "/success.md"
+    }
+}
