@@ -81,9 +81,13 @@ setupUnomi() {
 }
 
 setupES() {
-    [ ! -f elasticsearch.zip ] && wget -nv -O elasticsearch.zip https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.1.2.zip
-    mkdir $ELASTICSEACH_HOME
-    unzip elasticsearch.zip -d $ELASTICSEACH_HOME
+    #[ ! -f elasticsearch.zip ] && wget -nv -O elasticsearch.zip https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.1.2.zip
+    #mkdir $ELASTICSEACH_HOME
+    #unzip elasticsearch.zip -d $ELASTICSEACH_HOME
+    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.3.rpm
+    sudo rpm --install elasticsearch-5.6.3.rpm
+    sudo systemctl start elasticsearch.service
+
 }
 
 reindex() {
