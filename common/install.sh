@@ -109,6 +109,7 @@ reindexrm() {
     sed -i "s/.*jahia\.jackrabbit\.searchIndex\.autoRepair = .*/jahia\.jackrabbit\.searchIndex\.autoRepair = $1/g" $PROP
     sed -i "s/.*jahia\.jackrabbit\.searchIndex\.forceConsistencyCheck = .*/jahia\.jackrabbit\.searchIndex\.forceConsistencyCheck = $1/g" $PROP
 }
+
 case $1 in
     init)
         init $2 $3 $4 $5 $6 $7
