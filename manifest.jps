@@ -63,6 +63,9 @@
       "count": 1,
       "cloudlets": 32,
       "nodeGroup": "unomi",
+      "volumes": [
+        "/data"
+      ],
       "startService": false
     },
     {
@@ -71,6 +74,9 @@
       "count": 1,
       "cloudlets": 32,
       "nodeGroup": "es",
+      "volumes": [
+        "/data"
+      ],
       "startService": false
     },
     {
@@ -122,7 +128,6 @@
       {
         "cmd[mstr]": [
           "wget -O /data/install.sh ${baseUrl}/common/install.sh",
-          "bash /data/install.sh init ${baseUrl} ${globals.db_user} ${globals.db_pass} ${globals.mngr_user} ${globals.mngr_pass} ${globals.su_pass}",
           "bash /data/install.sh setupES"
         ]
       },
@@ -135,7 +140,6 @@
       {
         "cmd[mstr]": [
           "wget -O /data/install.sh ${baseUrl}/common/install.sh",
-          "bash /data/install.sh init ${baseUrl} ${globals.db_user} ${globals.db_pass} ${globals.mngr_user} ${globals.mngr_pass} ${globals.su_pass}",
           "bash /data/install.sh setupUnomi"
         ]
       },

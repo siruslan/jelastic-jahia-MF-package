@@ -46,12 +46,7 @@ init() {
     sed -i "s#\${FACTORY_CONFIG}#$FACTORY_CONFIG#g" browsing-config.xml
     java -jar installer.jar browsing-config.xml
 
-
-    mkdir $ELASTICSEACH_HOME
-    unzip elasticsearch.zip -d $ELASTICSEACH_HOME
-
-    mkdir $UNOMI_HOME
-    tar xzvf unomi.tar.gz -c $UNOMI_HOME
+    pwd > /data/pwd
 
     chown -R tomcat:tomcat $DATA_PATH 
 
@@ -81,11 +76,13 @@ setup() {
 }
 
 setupUnomi() {
-    return
+    mkdir $UNOMI_HOME
+    tar xzvf unomi.tar.gz -c $UNOMI_HOME
 }
 
 setupES() {
-    return
+    mkdir $ELASTICSEACH_HOME
+    unzip elasticsearch.zip -d $ELASTICSEACH_HOME
 }
 
 reindex() {
