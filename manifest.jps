@@ -8,7 +8,7 @@
     "short": "Jahia - Digital Experience Manager",
     "text": "Digital Experience Manager gives you an agile customizable platform that manages your entire digital ecosystem to innovate and deliver great customer experiences, foster internal collaboration and support dynamic business needs for sustainable growth."
   },
-  "baseUrl": "https://github.com/Jahia/jelastic-jahia-MF-package/tree/master",
+  "baseUrl": "https://raw.githubusercontent.com/Jahia/jelastic-jahia-MF-package/master",
   "globals": {
     "db_user": "jahia-db-${fn.random}",
     "db_pass": "${fn.password(20)}",
@@ -58,6 +58,22 @@
       "startService": false
     },
     {
+      "image": "jelastic/tomcat:8.5.23-openjdk-1.8.0_144",
+      "displayName": "Unomi",
+      "count": 1,
+      "cloudlets": 32,
+      "nodeGroup": "unomi",
+      "startService": false
+    },
+    {
+      "image": "jelastic/tomcat:8.5.23-openjdk-1.8.0_144",
+      "displayName": "Elasticsearch",
+      "count": 1,
+      "cloudlets": 32,
+      "nodeGroup": "es",
+      "startService": false
+    },
+    {
       "nodeType": "mysql",
       "tag": "5.7.19",
       "displayName": "DB Cluster",
@@ -69,7 +85,9 @@
   "onInstall": [
     "setupDB",
     "setupProcessing",
-    "setupBrowsing"
+    "setupBrowsing",
+    "setupES",
+    "setupUnomi"
   ],
   "onBeforeServiceScaleOut[cp]": {
     "forEach(event.response.nodes)": {
@@ -93,6 +111,32 @@
           "wget -O /data/install.sh ${baseUrl}/common/install.sh",
           "bash /data/install.sh init ${baseUrl} ${globals.db_user} ${globals.db_pass} ${globals.mngr_user} ${globals.mngr_pass} ${globals.su_pass}",
           "bash /data/install.sh setupProcessing"
+        ]
+      },
+      {
+        "api": "env.control.ExecDockerRunCmd",
+        "nodeId": "${nodes.mstr.first.id}"
+      }
+    ],
+    "setupES": [
+      {
+        "cmd[mstr]": [
+          "wget -O /data/install.sh ${baseUrl}/common/install.sh",
+          "bash /data/install.sh init ${baseUrl} ${globals.db_user} ${globals.db_pass} ${globals.mngr_user} ${globals.mngr_pass} ${globals.su_pass}",
+          "bash /data/install.sh setupES"
+        ]
+      },
+      {
+        "api": "env.control.ExecDockerRunCmd",
+        "nodeId": "${nodes.mstr.first.id}"
+      }
+    ],
+    "setupUnomi": [
+      {
+        "cmd[mstr]": [
+          "wget -O /data/install.sh ${baseUrl}/common/install.sh",
+          "bash /data/install.sh init ${baseUrl} ${globals.db_user} ${globals.db_pass} ${globals.mngr_user} ${globals.mngr_pass} ${globals.su_pass}",
+          "bash /data/install.sh setupUnomi"
         ]
       },
       {

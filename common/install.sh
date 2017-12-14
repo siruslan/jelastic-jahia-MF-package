@@ -1,6 +1,9 @@
 #!/bin/bash
 
 TOMCAT_HOME=/opt/tomcat
+ELASTICSEACH_HOME=/opt/elasticsearch
+UNOMI_HOME=/opt/unomi
+
 DATA_PATH=/data
 
 init() {
@@ -15,7 +18,9 @@ init() {
 
     [ ! -f mysql-connector-java-5.1.42.jar ] && wget -nv -O mysql-connector-java-5.1.42.jar $BASE_URL/common/db_driver/mysql-connector-java-5.1.42.jar
     [ ! -f installer.jar ] && wget -nv -O installer.jar https://www.jahia.com/downloads/jahia/digitalexperiencemanager7.2.1/DigitalExperienceManager-EnterpriseDistribution-7.2.1.1-r56757.4188.jar
-    
+    [ ! -f elasticsearch.zip ] && wget -nv -O elasticsearch.zip https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.1.2.zip
+    [ ! -f unomi.tar.gz ] && wget -nv -O unomi.tar.gz https://www.jahia.com/downloads/jahia/marketingfactory1.0/package/unomi-1.1.3-jahia.tar.gz
+
     wget -nv -O config.xml $BASE_URL/common/dx_7211_processing_withoutTomcat.xml
     sed -i "s#\${DB_USER}#$DB_USER#g" config.xml
     sed -i "s#\${DB_PASSWORD}#$DB_PASSWORD#g" config.xml
@@ -40,8 +45,15 @@ init() {
     sed -i "s#\${PROCESSING_SERVER}#false#g" browsing-config.xml
     sed -i "s#\${FACTORY_CONFIG}#$FACTORY_CONFIG#g" browsing-config.xml
     java -jar installer.jar browsing-config.xml
-    
-    chown -R tomcat:tomcat $DATA_PATH
+
+
+    mkdir $ELASTICSEACH_HOME
+    unzip elasticsearch.zip -d $ELASTICSEACH_HOME
+
+    mkdir $UNOMI_HOME
+    tar xzvf unomi.tar.gz -c $UNOMI_HOME
+
+    chown -R tomcat:tomcat $DATA_PATH 
 
     #rm -rf mysql-connector-java-5.1.42.jar
     #rm -rf installer.jar
@@ -68,6 +80,14 @@ setup() {
     sed -i "s#common.loader=\"\\\$#common.loader=\"$TOMCAT_HOME/conf/digital-factory-config\",\"\$#g" $TOMCAT_HOME/conf/catalina.properties
 }
 
+setupUnomi() {
+    
+}
+
+setupES() {
+    
+}
+
 reindex() {
     PROP=$TOMCAT_HOME/conf/digital-factory-config/jahia/jahia.properties
     sed -i "s/.*jahia\.jackrabbit\.reindexOnStartup = .*/jahia\.jackrabbit\.reindexOnStartup = $1/g" $PROP
@@ -86,7 +106,7 @@ reindexrm() {
     sed -i "s/.*jahia\.jackrabbit\.consistencyCheck = .*/jahia\.jackrabbit\.consistencyCheck = $1/g" $PROP
     sed -i "s/.*jahia\.jackrabbit\.consistencyFix = .*/jahia\.jackrabbit\.consistencyFix = $1/g" $PROP
     sed -i "s/.*jahia\.jackrabbit\.searchIndex\.enableConsistencyCheck = .*/jahia\.jackrabbit\.searchIndex\.enableConsistencyCheck = $1/g" $PROP
-     sed -i "s/.*jahia\.jackrabbit\.searchIndex\.autoRepair = .*/jahia\.jackrabbit\.searchIndex\.autoRepair = $1/g" $PROP
+    sed -i "s/.*jahia\.jackrabbit\.searchIndex\.autoRepair = .*/jahia\.jackrabbit\.searchIndex\.autoRepair = $1/g" $PROP
     sed -i "s/.*jahia\.jackrabbit\.searchIndex\.forceConsistencyCheck = .*/jahia\.jackrabbit\.searchIndex\.forceConsistencyCheck = $1/g" $PROP
 }
 case $1 in
@@ -98,6 +118,12 @@ case $1 in
         ;;
     setupBrowsing)
         setup browsing
+        ;;
+    setupES)
+        setupES
+        ;;
+    setupUnomi)
+        setupUnomi
         ;;
     reindex)
         reindex $2
