@@ -18,8 +18,6 @@ init() {
 
     [ ! -f mysql-connector-java-5.1.42.jar ] && wget -nv -O mysql-connector-java-5.1.42.jar $BASE_URL/common/db_driver/mysql-connector-java-5.1.42.jar
     [ ! -f installer.jar ] && wget -nv -O installer.jar https://www.jahia.com/downloads/jahia/digitalexperiencemanager7.2.1/DigitalExperienceManager-EnterpriseDistribution-7.2.1.1-r56757.4188.jar
-    [ ! -f elasticsearch.zip ] && wget -nv -O elasticsearch.zip https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.1.2.zip
-    [ ! -f unomi.tar.gz ] && wget -nv -O unomi.tar.gz https://www.jahia.com/downloads/jahia/marketingfactory1.0/package/unomi-1.1.3-jahia.tar.gz
 
     wget -nv -O config.xml $BASE_URL/common/dx_7211_processing_withoutTomcat.xml
     sed -i "s#\${DB_USER}#$DB_USER#g" config.xml
@@ -76,11 +74,13 @@ setup() {
 }
 
 setupUnomi() {
+    [ ! -f unomi.tar.gz ] && wget -nv -O unomi.tar.gz https://www.jahia.com/downloads/jahia/marketingfactory1.0/package/unomi-1.1.3-jahia.tar.gz
     mkdir $UNOMI_HOME
     tar xzvf unomi.tar.gz -c $UNOMI_HOME
 }
 
 setupES() {
+    [ ! -f elasticsearch.zip ] && wget -nv -O elasticsearch.zip https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.1.2.zip
     mkdir $ELASTICSEACH_HOME
     unzip elasticsearch.zip -d $ELASTICSEACH_HOME
 }
