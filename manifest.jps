@@ -58,7 +58,8 @@
       "startService": false
     },
     {
-      "image": "jelastic/tomcat:8.5.23-openjdk-1.8.0_144",
+      "nodeType": "unomi",
+      "tag": "8.5.23-openjdk-1.8.0_144",
       "displayName": "Unomi",
       "count": 1,
       "cloudlets": 32,
@@ -69,7 +70,8 @@
       "startService": false
     },
     {
-      "image": "jelastic/tomcat:8.5.23-openjdk-1.8.0_144",
+      "nodeType": "elasticsearch",
+      "tag": "8.5.23-openjdk-1.8.0_144",
       "displayName": "Elasticsearch",
       "count": 1,
       "cloudlets": 32,
