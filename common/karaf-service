@@ -31,6 +31,7 @@ APP_LONG_NAME="karaf"
 # Wrapper
 WRAPPER_CMD="/opt/unomi/unomi-1.1.3-jahia/bin/${APP_NAME}-wrapper"
 STARTUP_CMD="/opt/unomi/unomi-1.1.3-jahia/bin/start"
+STOP_CMD="/opt/unomi/unomi-1.1.3-jahia/bin/stop"
 WRAPPER_CONF="/opt/unomi/unomi-1.1.3-jahia/etc/${APP_NAME}-wrapper.conf"
 
 # Priority at which to run the wrapper.  See "man nice" for valid priorities.
@@ -178,65 +179,8 @@ start() {
 }
 
 stopit() {
-    echo "Stopping $APP_LONG_NAME..."
-    getpid
-    if [ "X$pid" = "X" ]
-    then
-        echo "$APP_LONG_NAME was not running."
-    else
-        if [ "X$IGNORE_SIGNALS" = "X" ]
-        then
-            # Running so try to stop it.
-            kill $pid
-            if [ $? -ne 0 ]
-            then
-                # An explanation for the failure should have been given
-                echo "Unable to stop $APP_LONG_NAME."
-                exit 1
-            fi
-        else
-            rm -f $ANCHORFILE
-            if [ -f $ANCHORFILE ]
-            then
-                # An explanation for the failure should have been given
-                echo "Unable to stop $APP_LONG_NAME."
-                exit 1
-            fi
-        fi
-
-        # We can not predict how long it will take for the wrapper to
-        #  actually stop as it depends on settings in wrapper.conf.
-        #  Loop until it does.
-        savepid=$pid
-        CNT=0
-        TOTCNT=0
-        while [ "X$pid" != "X" ]
-        do
-            # Show a waiting message every 5 seconds.
-            if [ "$CNT" -lt "5" ]
-            then
-                CNT=`expr $CNT + 1`
-            else
-                echo "Waiting for $APP_LONG_NAME to exit..."
-                CNT=0
-            fi
-            TOTCNT=`expr $TOTCNT + 1`
-
-            sleep 1
-
-            testpid
-        done
-
-        pid=$savepid
-        testpid
-        if [ "X$pid" != "X" ]
-        then
-            echo "Failed to stop $APP_LONG_NAME."
-            exit 1
-        else
-            echo "Stopped $APP_LONG_NAME."
-        fi
-    fi
+    echo $STARTUP_CMD
+   exec $STOP_CMD
 }
 
 status() {
