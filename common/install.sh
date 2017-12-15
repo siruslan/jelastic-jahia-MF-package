@@ -91,8 +91,7 @@ setupUnomi() {
     mv -f karaf-service /etc/init.d/karaf-service
     mv -f karaf-wrapper.conf unomi-1.1.3-jahia/etc/karaf-wrapper.conf
 
-    ln -s /etc/init.d/karaf-service /etc/rc.d/init.d/karaf-service
-
+    chmod ou+x /etc/init.d/karaf-service
     service karaf-service start
 }
 
