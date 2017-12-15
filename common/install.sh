@@ -78,6 +78,8 @@ setupUnomi() {
     cd $UNOMI_HOME
     [ ! -f unomi.tar.gz ] && wget -nv -O unomi.tar.gz https://www.jahia.com/downloads/jahia/marketingfactory1.0/package/unomi-1.1.3-jahia.tar.gz
     tar xzvf unomi.tar.gz
+    wget -nv -O config.xml $BASE_URL/common/setenv_unomi
+    mv -f setenv_unomi unomi-1.1.3-jahia/bin/setenv
 }
 
 setupES() {
