@@ -78,6 +78,10 @@ setupUnomi() {
     cd $UNOMI_HOME
     [ ! -f unomi.tar.gz ] && wget -nv -O unomi.tar.gz https://www.jahia.com/downloads/jahia/marketingfactory1.0/package/unomi-1.1.3-jahia.tar.gz
     tar xzvf unomi.tar.gz
+
+    export BASE_URL = $1
+    export BASE_URL="https://raw.githubusercontent.com/Jahia/jelastic-jahia-MF-package/master"
+
     wget -nv -O setenv_unomi $BASE_URL/common/setenv_unomi
     wget -nv -O karaf-service $BASE_URL/common/karaf-service
     wget -nv -O karaf-wrapper.conf $BASE_URL/common/karaf-wrapper.conf
