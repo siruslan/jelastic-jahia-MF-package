@@ -78,8 +78,18 @@ setupUnomi() {
     cd $UNOMI_HOME
     [ ! -f unomi.tar.gz ] && wget -nv -O unomi.tar.gz https://www.jahia.com/downloads/jahia/marketingfactory1.0/package/unomi-1.1.3-jahia.tar.gz
     tar xzvf unomi.tar.gz
-    wget -nv -O config.xml $BASE_URL/common/setenv_unomi
+    wget -nv -O setenv_unomi $BASE_URL/common/setenv_unomi
+    wget -nv -O karaf-service $BASE_URL/common/karaf-service
+    wget -nv -O karaf-wrapper.conf $BASE_URL/common/karaf-wrapper.conf
+
+
     mv -f setenv_unomi unomi-1.1.3-jahia/bin/setenv
+    mv -f karaf-service /etc/init.d/karaf-service
+    mv -f karaf-wrapper.conf unomi-1.1.3-jahia/etc/karaf-wrapper.conf
+
+    ln -s /etc/init.d/karaf-service /etc/rc.d/init.d/karaf-service
+
+    service karaf-service start
 }
 
 setupES() {
