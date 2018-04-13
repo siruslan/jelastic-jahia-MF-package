@@ -140,5 +140,5 @@ actions:
     - sed -i 's/dx-.*/dx-node${this.nodeId}/' $prop
     
 success:
-  text: /success.md
-  email: /success.md
+  text: /text/success.md
+  email: /text/success.md
