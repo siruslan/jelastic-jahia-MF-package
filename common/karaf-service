@@ -22,27 +22,27 @@
 #
 
 # set the JAVA_HOME to launch the wrapper
-JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.144-0.b01.el7_4.x86_64"
+JAVA_HOME="/usr/java/latest"
 
 # Application
 APP_NAME="karaf"
 APP_LONG_NAME="karaf"
 
 # Wrapper
-WRAPPER_CMD="/opt/unomi/unomi-1.1.3-jahia/bin/${APP_NAME}-wrapper"
-STARTUP_CMD="/opt/unomi/unomi-1.1.3-jahia/bin/start"
-STOP_CMD="/opt/unomi/unomi-1.1.3-jahia/bin/stop"
-WRAPPER_CONF="/opt/unomi/unomi-1.1.3-jahia/etc/${APP_NAME}-wrapper.conf"
+WRAPPER_CMD="$UNOMI_HOME/unomi-$STACK_VERSION/bin/${APP_NAME}-wrapper"
+STARTUP_CMD="$UNOMI_HOME/unomi-$STACK_VERSION/bin/start"
+STOP_CMD="$UNOMI_HOME/unomi-$STACK_VERSION/bin/stop"
+WRAPPER_CONF="$UNOMI_HOME/unomi-$STACK_VERSION/etc/${APP_NAME}-wrapper.conf"
 
 # Priority at which to run the wrapper.  See "man nice" for valid priorities.
 #  nice is only used if a priority is specified.
 PRIORITY=
 
 # Location of the data folder.
-DATADIR="/opt/unomi/unomi-1.1.3-jahia/data"
+DATADIR="$UNOMI_HOME/unomi-$STACK_VERSION/data"
 
 # Location of the pid file.
-PIDDIR="/opt/unomi/unomi-1.1.3-jahia/data"
+PIDDIR="$UNOMI_HOME/unomi-$STACK_VERSION/data"
 
 
 checkUser() {
