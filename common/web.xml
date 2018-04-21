@@ -161,12 +161,32 @@
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
         <async-supported>true</async-supported>
     </filter>
+         
+    <filter>
+        <filter-name>springSessionRepositoryFilter</filter-name>
+        <filter-class>org.jahia.bin.filters.ModuleDelegatingFilterProxy</filter-class>
+        <async-supported>true</async-supported>
+    </filter>
+    <filter>
+         <filter-name>httpSessionSynchronizerFilter</filter-name>
+         <filter-class>org.jahia.bin.filters.ModuleDelegatingFilterProxy</filter-class>
+         <async-supported>true</async-supported>
+     </filter>         
 
     <filter-mapping>
         <filter-name>CharacterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <filter-mapping>
+        <filter-name>springSessionRepositoryFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>httpSessionSynchronizerFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>         
+         
     <filter-mapping>
         <filter-name>HttpHeadRequestFilter</filter-name>
         <url-pattern>/*</url-pattern>
